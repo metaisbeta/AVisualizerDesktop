@@ -9,6 +9,7 @@ import { NavUtils } from '../utils/NavUtils';
 import { HeaderUtils } from '../utils/HeaderUtils';
 import {ClassViewComponent} from '../class-view/class-view.component'
 import {PackageViewComponent} from '../package-view/package-view.component'
+import {HttpClient} from '@angular/common/http';
 @Component({
   selector: 'system-view',
   templateUrl: './system-view.component.html',
@@ -27,18 +28,30 @@ export class SystemViewComponent implements OnInit {
   private selectedNode: any;
   private path;
   private toload
-  private filepath;	
-  constructor() {
+  private filepath;
+  private project_data;
+  readonly apiURL : string;	
+  constructor(private http : HttpClient) {
+  	 		  	this.apiURL  = 'http://localhost:8000'; 
+  	 		  	try{
+  	var file = d3.select("#projectSelectBox").select("select option:checked").attr("value");
+  	console.log(this.apiURL+'/projects/'+file+"/"+file+"-SV.json")
+		this.http.get(this.apiURL+'/'+file+"/"+file+"-SV.json")
+		.subscribe(resultado => { this.readPackageView(resultado as any[]);});
+		this.ngOnInit();
+		  	}catch(e){
+  		
+  	}
 	this.node = null;
  this.root = null;
  	try{
  		//this.toload = d3.select("#projectSelectBox option:checked").attr("value");
  		var files = d3.select("#upload").property("value").split("\\");
-    		var file = files[files.length-1];
+    		var filet = files[files.length-1];
     		var dir = files[files.length-1].split("-");
     		var folder = dir[0].toLowerCase();
  		this.filepath = "./assets/"+folder+"/"+dir[0]+"-SV.json";
- 		this.ngOnInit();
+ 		
  		
  	}catch (e) {
    // declarações para manipular quaisquer exceções
@@ -51,13 +64,19 @@ export class SystemViewComponent implements OnInit {
 
   ngOnInit(): void {
     // read data from JSON
-    this.path=["./assets/spaceweather/SpaceWeatherTSI-SV.json",'./assets/guj/Guj-SV.json','./assets/geostore/Geostore-SV.json'];
+    //this.path=["./assets/spaceweather/SpaceWeatherTSI-SV.json",'./assets/guj/Guj-SV.json','./assets/geostore/Geostore-SV.json'];
     //d3.json(this.path[this.toload]).then(data => this.readPackageView(data as any[]))
     //                                            .catch(error => console.log(error));
-	console.log(this.filepath)
-	d3.json(this.filepath).then(data => this.readPackageView(data as any[]))
-                                                .catch(error => console.log(error));
-
+	//console.log(this.filepath)
+	//d3.json(this.filepath).then(data => this.readPackageView(data as any[]))
+        //                                        .catch(error => console.log(error));
+	//try{
+	//this.readPackageView(this.project_data as any[])
+	 //	}catch (e) {
+   // declarações para manipular quaisquer exceções
+   	//this.toload=0; // passa o objeto de exceção para o manipulador de erro
+   		
+//}
                                                      
     //  d3.json('./assets/guj/Guj-SV.json').then(data => this.readPackageView(data as any[]))
     //   .catch(error => console.log(error));
@@ -70,13 +89,14 @@ export class SystemViewComponent implements OnInit {
   }
 
   private readPackageView(data: any[]): void{
-
+	console.log("data");
+	console.log(this.project_data)
     this.root = d3.hierarchy(data);
 
     this.root.sum(d => d.value)
              .sort((a, b) =>  b.value - a.value);
-
-
+		var options=[]
+           
     const pack = d3.pack()
       .size([this.width - 2, this.height - 10])
       .padding(3);

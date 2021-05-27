@@ -1,0 +1,434 @@
+{
+  "name": "graphhopper",
+  "children": [
+    {
+      "name": "com.graphhopper",
+      "type": "package",
+      "properties": {},
+      "children": [
+        {
+          "name": "java.lang",
+          "type": "schema",
+          "value": 3,
+          "properties": {},
+          "children": []
+        },
+        {
+          "name": "com.graphhopper.apache.commons.collections",
+          "type": "package",
+          "properties": {},
+          "children": []
+        },
+        {
+          "name": "com.graphhopper.apache.commons.lang3",
+          "type": "package",
+          "properties": {},
+          "children": []
+        },
+        {
+          "name": "com.graphhopper.coll",
+          "type": "package",
+          "properties": {},
+          "children": [
+            {
+              "name": "java.lang",
+              "type": "schema",
+              "value": 35,
+              "properties": {},
+              "children": []
+            }
+          ]
+        },
+        {
+          "name": "com.graphhopper.config",
+          "type": "package",
+          "properties": {},
+          "children": [
+            {
+              "name": "java.lang",
+              "type": "schema",
+              "value": 7,
+              "properties": {},
+              "children": []
+            }
+          ]
+        },
+        {
+          "name": "com.graphhopper.debatty.java.stringsimilarity",
+          "type": "package",
+          "properties": {},
+          "children": []
+        },
+        {
+          "name": "com.graphhopper.geohash",
+          "type": "package",
+          "properties": {},
+          "children": []
+        },
+        {
+          "name": "com.graphhopper.isochrone.algorithm",
+          "type": "package",
+          "properties": {},
+          "children": [
+            {
+              "name": "java.lang",
+              "type": "schema",
+              "value": 16,
+              "properties": {},
+              "children": []
+            }
+          ]
+        },
+        {
+          "name": "com.graphhopper.reader",
+          "type": "package",
+          "properties": {},
+          "children": [
+            {
+              "name": "java.lang",
+              "type": "schema",
+              "value": 14,
+              "properties": {},
+              "children": []
+            },
+            {
+              "name": "com.graphhopper.reader.dem",
+              "type": "package",
+              "properties": {},
+              "children": [
+                {
+                  "name": "java.lang",
+                  "type": "schema",
+                  "value": 46,
+                  "properties": {},
+                  "children": []
+                }
+              ]
+            },
+            {
+              "name": "com.graphhopper.reader.osm",
+              "type": "package",
+              "properties": {},
+              "children": [
+                {
+                  "name": "java.lang",
+                  "type": "schema",
+                  "value": 10,
+                  "properties": {},
+                  "children": []
+                },
+                {
+                  "name": "com.graphhopper.reader.osm.conditional",
+                  "type": "package",
+                  "properties": {},
+                  "children": [
+                    {
+                      "name": "java.lang",
+                      "type": "schema",
+                      "value": 6,
+                      "properties": {},
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "name": "com.graphhopper.reader.osm.pbf",
+                  "type": "package",
+                  "properties": {},
+                  "children": [
+                    {
+                      "name": "java.lang",
+                      "type": "schema",
+                      "value": 7,
+                      "properties": {},
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "com.graphhopper.routing",
+          "type": "package",
+          "properties": {},
+          "children": [
+            {
+              "name": "java.lang",
+              "type": "schema",
+              "value": 138,
+              "properties": {},
+              "children": []
+            },
+            {
+              "name": "com.graphhopper.util",
+              "type": "schema",
+              "value": 1,
+              "properties": {},
+              "children": []
+            },
+            {
+              "name": "com.graphhopper.routing.ch",
+              "type": "package",
+              "properties": {},
+              "children": [
+                {
+                  "name": "java.lang",
+                  "type": "schema",
+                  "value": 120,
+                  "properties": {},
+                  "children": []
+                }
+              ]
+            },
+            {
+              "name": "com.graphhopper.routing.ev",
+              "type": "package",
+              "properties": {},
+              "children": [
+                {
+                  "name": "java.lang",
+                  "type": "schema",
+                  "value": 34,
+                  "properties": {},
+                  "children": []
+                }
+              ]
+            },
+            {
+              "name": "com.graphhopper.routing.lm",
+              "type": "package",
+              "properties": {},
+              "children": [
+                {
+                  "name": "java.lang",
+                  "type": "schema",
+                  "value": 30,
+                  "properties": {},
+                  "children": []
+                }
+              ]
+            },
+            {
+              "name": "com.graphhopper.routing.querygraph",
+              "type": "package",
+              "properties": {},
+              "children": [
+                {
+                  "name": "java.lang",
+                  "type": "schema",
+                  "value": 143,
+                  "properties": {},
+                  "children": []
+                }
+              ]
+            },
+            {
+              "name": "com.graphhopper.routing.subnetwork",
+              "type": "package",
+              "properties": {},
+              "children": [
+                {
+                  "name": "java.lang",
+                  "type": "schema",
+                  "value": 21,
+                  "properties": {},
+                  "children": []
+                }
+              ]
+            },
+            {
+              "name": "com.graphhopper.routing.util",
+              "type": "package",
+              "properties": {},
+              "children": [
+                {
+                  "name": "java.lang",
+                  "type": "schema",
+                  "value": 88,
+                  "properties": {},
+                  "children": []
+                },
+                {
+                  "name": "com.graphhopper.routing.util.parsers",
+                  "type": "package",
+                  "properties": {},
+                  "children": [
+                    {
+                      "name": "java.lang",
+                      "type": "schema",
+                      "value": 61,
+                      "properties": {},
+                      "children": []
+                    },
+                    {
+                      "name": "com.graphhopper.routing.util.parsers.helpers",
+                      "type": "package",
+                      "properties": {},
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "name": "com.graphhopper.routing.util.spatialrules",
+                  "type": "package",
+                  "properties": {},
+                  "children": [
+                    {
+                      "name": "java.lang",
+                      "type": "schema",
+                      "value": 17,
+                      "properties": {},
+                      "children": []
+                    },
+                    {
+                      "name": "com.graphhopper.routing.util.spatialrules.countries",
+                      "type": "package",
+                      "properties": {},
+                      "children": [
+                        {
+                          "name": "java.lang",
+                          "type": "schema",
+                          "value": 6,
+                          "properties": {},
+                          "children": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "com.graphhopper.routing.util.tour",
+                  "type": "package",
+                  "properties": {},
+                  "children": [
+                    {
+                      "name": "java.lang",
+                      "type": "schema",
+                      "value": 6,
+                      "properties": {},
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "com.graphhopper.routing.weighting",
+              "type": "package",
+              "properties": {},
+              "children": [
+                {
+                  "name": "java.lang",
+                  "type": "schema",
+                  "value": 55,
+                  "properties": {},
+                  "children": []
+                },
+                {
+                  "name": "com.graphhopper.routing.weighting.custom",
+                  "type": "package",
+                  "properties": {},
+                  "children": [
+                    {
+                      "name": "java.lang",
+                      "type": "schema",
+                      "value": 11,
+                      "properties": {},
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "com.graphhopper.search",
+          "type": "package",
+          "properties": {},
+          "children": [
+            {
+              "name": "java.lang",
+              "type": "schema",
+              "value": 7,
+              "properties": {},
+              "children": []
+            }
+          ]
+        },
+        {
+          "name": "com.graphhopper.storage",
+          "type": "package",
+          "properties": {},
+          "children": [
+            {
+              "name": "java.lang",
+              "type": "schema",
+              "value": 348,
+              "properties": {},
+              "children": []
+            },
+            {
+              "name": "com.graphhopper.storage.index",
+              "type": "package",
+              "properties": {},
+              "children": [
+                {
+                  "name": "java.lang",
+                  "type": "schema",
+                  "value": 17,
+                  "properties": {},
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "com.graphhopper.util",
+          "type": "package",
+          "properties": {},
+          "children": [
+            {
+              "name": "java.lang",
+              "type": "schema",
+              "value": 150,
+              "properties": {},
+              "children": []
+            },
+            {
+              "name": "com.graphhopper.util.details",
+              "type": "package",
+              "properties": {},
+              "children": [
+                {
+                  "name": "java.lang",
+                  "type": "schema",
+                  "value": 28,
+                  "properties": {},
+                  "children": []
+                }
+              ]
+            },
+            {
+              "name": "com.graphhopper.util.shapes",
+              "type": "package",
+              "properties": {},
+              "children": [
+                {
+                  "name": "java.lang",
+                  "type": "schema",
+                  "value": 15,
+                  "properties": {},
+                  "children": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

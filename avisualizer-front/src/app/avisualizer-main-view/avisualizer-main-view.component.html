@@ -24,7 +24,18 @@
             <option value="packageView">Package View</option>
               <option value="classView">Class View</option>
           </select>
-        </div>
+          <button (click)="listProjects()">Get projects</button>
+        	<div> </div>
+
+    <form [formGroup] = "uploadForm" (ngSubmit)="onSubmit()">      
+      <div>
+        <input type="file" name="profile" (change)="onFileSelect($event)" />
+      </div>
+      <div>
+        <button type="submit">Upload</button>
+      </div>
+    </form>
+  </div>
       </div>
       <div class="row">
           <system-view [hidden]="isSVHidden"></system-view>

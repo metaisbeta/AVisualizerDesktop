@@ -9,6 +9,7 @@ import { NavUtils } from '../utils/NavUtils';
 import { HeaderUtils } from '../utils/HeaderUtils';
 import { SystemViewComponent } from '../system-view/system-view.component';
 import { ClassViewComponent } from '../class-view/class-view.component';
+import {HttpClient} from '@angular/common/http';
 @Component({
   selector: 'package-view',
   templateUrl: './package-view.component.html',
@@ -25,13 +26,29 @@ export class PackageViewComponent implements OnInit {
   private zoomProp: ZoomProp = {};
   private selectedNode: any;
   private path;
-  constructor() {  }
+  private project_data;
+  readonly apiURL : string;
+  constructor(private http : HttpClient) {  
+  	this.apiURL  = 'http://localhost:8000'; 
+  	try{
+  		var file = d3.select("#projectSelectBox").select("select option:checked").attr("value");
+  	  	console.log(this.apiURL+'/projects/'+file+"/"+file+"-PV.json")
+		this.http.get(this.apiURL+'/'+file+"/"+file+"-PV.json")
+		.subscribe(resultado => this.readPackageView(resultado as any[]));
+  	}catch (e) {
+   // declarações para manipular quaisquer exceções
+   	//this.toload=0; // passa o objeto de exceção para o manipulador de erro
+   	
+}	
+
+  }
 
   ngOnInit(): void {
     //read data from JSON
-     this.path=["./assets/spaceweather/SpaceWeatherTSI-PV.json",'./assets/guj/Guj-PV.json','./assets/geostore/Geostore-PV.json'];
-    d3.json(this.path[0]).then(data => this.readPackageView(data as any[]))
-                                               .catch(error => console.log(error));
+     this.path=["./assets/spaceweathertsi/SpaceWeatherTSI-PV.json",'./assets/guj/Guj-PV.json','./assets/geostore/Geostore-PV.json'];
+     
+    //d3.json(this.path[0]).then(data => this.readPackageView(data as any[]))
+     //                                          .catch(error => console.log(error));
        	         //d3.select("#SelectViewBox").append("select").attr("id","projectSelectBox").append("option").text("SpaceWeather").attr("value",0);
          //d3.select("#projectSelectBox").append("option").text("Guj").attr("value",1);
          //d3.select("#projectSelectBox").append("option").text("Geostore").attr("value",2);
@@ -54,37 +71,42 @@ export class PackageViewComponent implements OnInit {
 						//NavUtils.updateSelectBoxText("SelectViewBox","systemView");
 						
                                                // });
-                     d3.select("#SelectViewBox").append("input").attr("type","file").attr("id","upload").attr("name","filename");
-                      d3.select("#SelectViewBox").append("input").attr("type","submit")
-                      					.on("click",(event,d)=>{
-                      						var files = d3.select("#upload").property("value").split("\\");
-                      						var file = files[files.length-1];
-                      						var dir = files[files.length-1].split("-");
-                      						var  folder = dir[0].toLowerCase();
-                      						
-                      						d3.select("tbody").selectAll("*").remove();
-								
-         		//var value = d3.select("#projectSelectBox option:checked").attr("value");
-         		d3.select(".svg-container-sv").attr('hidden', null);
-		        d3.select(".svg-container-sv").selectAll("*").remove();
-		         d3.select(".svg-container-pv").selectAll("*").remove();
-		          d3.select(".svg-container-cv").selectAll("*").remove();
-		          
-         		//d3.json(this.path[value]).then(data => this.readPackageView(data as any[]))
-                       //                        .catch(error => console.log(error));
-                       d3.json("./assets/"+folder+"/"+dir[0]+"-PV.json").then(data => this.readPackageView(data as any[]))
-                                               .catch(error => console.log(error));
-                                               //let test = new SystemViewComponent();
-                                               //let test1 = new ClassViewComponent();
-                                            	
-                                            	 let test = new SystemViewComponent();
-                                               let test1 = new ClassViewComponent();
-						d3.select("class-view").attr("hidden",'');
-						d3.select("package-view").attr("hidden",'');
-						d3.select("system-view").attr("hidden",null);
-						NavUtils.updateSelectBoxText("SelectViewBox","systemView");
-						
-                      					});                           
+                                               
+                                             
+//button upload-------------------------------
+//                     d3.select("#SelectViewBox").append("input").attr("type","file").attr("id","upload").attr("name","filename");
+//                      d3.select("#SelectViewBox").append("input").attr("type","submit")
+//                      					.on("click",(event,d)=>{
+//                      						var files = d3.select("#upload").property("value").split("\\");
+//                      						var file = files[files.length-1];
+//                      						var dir = files[files.length-1].split("-");
+//                      						var  folder = dir[0].toLowerCase();
+//                      						
+//                      						d3.select("tbody").selectAll("*").remove();
+//								
+//         		//var value = d3.select("#projectSelectBox option:checked").attr("value");
+//         		d3.select(".svg-container-sv").attr('hidden', null);
+//		        d3.select(".svg-container-sv").selectAll("*").remove();
+//		         d3.select(".svg-container-pv").selectAll("*").remove();
+//		          d3.select(".svg-container-cv").selectAll("*").remove();
+//		          
+//         		//d3.json(this.path[value]).then(data => this.readPackageView(data as any[]))
+//                       //                        .catch(error => console.log(error));
+//                       d3.json("./assets/"+folder+"/"+dir[0]+"-PV.json").then(data => this.readPackageView(data as any[]))
+//                                               .catch(error => console.log(error));
+//                                               //let test = new SystemViewComponent();
+//                                               //let test1 = new ClassViewComponent();
+//                                            	
+//                                            	 let test = new SystemViewComponent();
+//                                               let test1 = new ClassViewComponent();
+//						d3.select("class-view").attr("hidden",'');
+//						d3.select("package-view").attr("hidden",'');
+//						d3.select("system-view").attr("hidden",null);
+//						NavUtils.updateSelectBoxText("SelectViewBox","systemView");
+//						
+//                      					});   
+
+//Load other sample projects                        
     //  d3.json("./assets/guj/Guj-PV.json").then(data => this.readPackageView(data as any[]))
     //   .catch(error => console.log(error));
 
@@ -147,6 +169,7 @@ export class PackageViewComponent implements OnInit {
         	if(d.data.type=="package" && (d.data.name.includes(d3.select(".svg-container-sv").
             attr("lastSelected")) ||
             d.data.name==d3.select(".svg-container-sv").attr("lastSelected"))){
+            	console.log(d.data.name,"here?")
 		       if(d.data.name==this.root.descendants()[1].data.name){
 		       	var node = d.descendants()[0].data.children[0].name;
 		       	console.log(node);
@@ -161,6 +184,7 @@ export class PackageViewComponent implements OnInit {
 				});
 				d3.select(".svg-container-sv").attr("lastSelected",node);
 		       }else{
+		       console.log(d.data.name,"here??")
 		      		this.zoomProp.focus !== d && (ZoomUtils.zoom(event, d,this.zoomProp,this.svg,this.node),event.stopPropagation(),SVGUtils.setFocus(d.data.name,".svg-container-pv"))
 			       CircleUtils.highlightNode(".svg-container-pv",d.data.name);
 			       d3.select(".svg-container-pv").attr("lastSelected",d.data.name);
@@ -175,7 +199,7 @@ export class PackageViewComponent implements OnInit {
 
 
           }else if(d.data.type=="class" || d.data.type=="interface"){
-          		
+          		console.log("h?ere?")
         		//HeaderUtils.setPackageViewHeader("Package",d.parent.data.name,this.root.data.name);
             HeaderUtils.headerUpdate('Package View', d.data.type.charAt(0).toUpperCase() + d.data.type.slice(1) +  ': ' + d.data.name);
         		this.zoomProp.focus !== d && (ZoomUtils.zoom(event, d,this.zoomProp,this.svg,this.node), event.stopPropagation(),SVGUtils.setFocus(d.parent.data.name,".svg-container-pv"))
@@ -186,6 +210,7 @@ export class PackageViewComponent implements OnInit {
                        CircleUtils.highlightNode(".svg-container-pv",d.data.name);
 
         	}else if(d.data.type=="package" && !d3.select(".svg-container-sv").attr("lastSelected").includes(d.parent.data.name)){
+        		console.log("herea?")
 			//HeaderUtils.setSystemViewHeader(this.root.data.name);
             		HeaderUtils.headerUpdate('System View', 'Package: ' + d.data.name);
             		NavUtils.updateSelectBoxText("SelectViewBox","systemView");
@@ -220,9 +245,14 @@ export class PackageViewComponent implements OnInit {
 			NavUtils.updateSelectBoxText("SelectViewBox","classView");
 
         	}else{
-            		CircleUtils.highlightNode('.svg-container-sv', d.data.name);
+        		console.log("???")
+//            		CircleUtils.highlightNode('.svg-container-sv', d.data.name);
+//            		this.zoomProp.focus !== d && (ZoomUtils.zoom(event, d, this.zoomProp, this.svg, this.node),	event.stopPropagation(), SVGUtils.setFocus(d.data.name, '.svg-container-sv'));
+//            		HeaderUtils.headerUpdate('Package View', 'Package: ' + d.data.name);
+		        CircleUtils.highlightNode('.svg-container-sv', d.data.name);
             		this.zoomProp.focus !== d && (ZoomUtils.zoom(event, d, this.zoomProp, this.svg, this.node),	event.stopPropagation(), SVGUtils.setFocus(d.data.name, '.svg-container-sv'));
-            		HeaderUtils.headerUpdate('Package View', 'Package: ' + d.data.name);
+            		HeaderUtils.headerUpdate('System View', 'Package: ' + d.data.name);
+            		SVGUtils.showView("package-view","system-view");
           	}
 
         })
