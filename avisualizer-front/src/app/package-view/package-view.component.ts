@@ -7,8 +7,8 @@ import { SVGUtils } from '../utils/SVGUtils';
 import { ZoomUtils } from '../utils/ZoomUtils';
 import { NavUtils } from '../utils/NavUtils';
 import { HeaderUtils } from '../utils/HeaderUtils';
-import { SystemViewComponent } from '../system-view/system-view.component';
 import { ClassViewComponent } from '../class-view/class-view.component';
+import {GlobalConstants} from '../utils/constants/GlobalConstants'
 import {HttpClient} from '@angular/common/http';
 @Component({
   selector: 'package-view',
@@ -28,18 +28,20 @@ export class PackageViewComponent implements OnInit {
   private path;
   private project_data;
   readonly apiURL : string;
+  	private classViewData;
+	private classView;
   constructor(private http : HttpClient) {  
-  	this.apiURL  = 'http://localhost:8000'; 
-  	try{
-  		var file = d3.select("#projectSelectBox").select("select option:checked").attr("value");
-  	  	console.log(this.apiURL+'/projects/'+file+"/"+file+"-PV.json")
-		this.http.get(this.apiURL+'/'+file+"/"+file+"-PV.json")
-		.subscribe(resultado => this.readPackageView(resultado as any[]));
-  	}catch (e) {
-   // declarações para manipular quaisquer exceções
-   	//this.toload=0; // passa o objeto de exceção para o manipulador de erro
-   	
-}	
+//  	this.apiURL  = 'http://localhost:8000'; 
+//  	try{
+//  		var file = d3.select("#projectSelectBox").select("select option:checked").attr("value");
+//  	  	console.log(this.apiURL+'/projects/'+file+"/"+file+"-PV.json")
+//		this.http.get(this.apiURL+'/'+file+"/"+file+"-PV.json")
+//		.subscribe(resultado => this.readPackageView(resultado as any[]));
+//  	}catch (e) {
+//   // declarações para manipular quaisquer exceções
+//   	//this.toload=0; // passa o objeto de exceção para o manipulador de erro
+//   	
+//}	
 
   }
 
@@ -118,40 +120,69 @@ export class PackageViewComponent implements OnInit {
       // .catch(error => console.log(error));
   }
 
-  private readPackageView(data: any[]): void{
+  private readPackageView(data,name,map): void{
 
-    this.root = d3.hierarchy(data);
-
+   this.schemasMap=map;	
+  
+    	console.log(name)
+var findObjectByLabel = function(objs, label) {
+	
+  if(String(objs.name) === label) { 
+    return objs; 
+    }
+  else{
+    if(objs.children){
+      for(var i in objs.children){
+        let found = findObjectByLabel(objs.children[i],label)
+        if(found) return found
+      }
+    }
+  }
+};
+	
+   var obj = findObjectByLabel(data,name);
+     this.root = d3.hierarchy(obj);
+	console.log(obj.name)
     //Now using LOCAD, no need to add 1 anymore
     // this.root.descendants().forEach(d => {
     //
     //     d.data.value = d.data.value+1;//adding 1 to each AA, to avoid 0
     // });
-
+   	
     this.root.sum(d => d.value)
     .sort((a, b) =>  b.value - a.value);
 
     const pack = d3.pack()
       .size([this.width - 2, this.height - 10])
       .padding(3);
-
+	
     pack(this.root);
-
+    	
     this.zoomProp.focus = this.root;
 
+	var file = d3.select("#"+GlobalConstants.ProjectSelectBoxName).select("select option:checked").attr("value");
+	  		console.log(GlobalConstants.ServerURL+'/projects/'+file+"/"+file+"-CV.json")
+			this.http.get(GlobalConstants.ServerURL+'/'+file+"/"+file+"-CV.json")
+				.subscribe(data=>{
+        				this.classViewData = data;
+        				//const anot = new AnnotationSchemas(d3.hierarchy(data), 'class');	
+        				//SchemaTableComponent.populateSchemasTable(anot);
+   });  
+
+
     //Fetch Annotations Schemas
-    const anot = new AnnotationSchemas(this.root,'locad');
-    this.schemasMap = anot.getSchemasColorMap();
-    console.log(this.schemasMap);
+//    const anot = new AnnotationSchemas(this.root,'package');
+//    this.schemasMap = anot.getSchemasColorMap();
+//    console.log(this.schemasMap);
     
-    //Create the table with Annotation Schemas
-    SchemaTableComponent.populateSchemasTable(anot);
-	
+//    //Create the table with Annotation Schemas
+//    //SchemaTableComponent.populateSchemasTable(anot);
+//	
     this.svg = SVGUtils.createSvg(".svg-container-pv",this.width,this.height,"pacote");
     d3.select(".svg-container-pv").attr("lastSelected",this.root.data.name);
     d3.select(".svg-container-pv").attr("lastClicked","");
     d3.select(".svg-container-pv").attr("lastClass","");
-    d3.select(".svg-container-pv").attr("rootName",this.root.children[0].data.name);
+    d3.select(".svg-container-pv").attr("rootName",name);
 
 
     this.node = SVGUtils.createNode(this.svg, this.root);
@@ -160,10 +191,14 @@ export class PackageViewComponent implements OnInit {
 
     //Color all circles
     //this.svg.selectAll("circle").each(function(d){if(d.data.type=="annotation")console.log(d.data.value);});
+    d3.select(".svg-container-pv")
+    	.on("click",(event,d)=>{
+    		SVGUtils.showView("package-view","system-view");
+    	})
     d3.selectAll("circle").attr("stroke", d => CircleUtils.addCircleStroke(d))
                           .attr("stroke-dasharray", d=> CircleUtils.addCircleDashArray(d))
                           .attr("fill", d => CircleUtils.colorCircles(d,this.schemasMap));
-    //Apply zoom to all circles in this specific view
+//    //Apply zoom to all circles in this specific view
     this.svg.selectAll("circle")
         .on("click", (event, d) => {
         	if(d.data.type=="package" && (d.data.name.includes(d3.select(".svg-container-sv").
@@ -220,7 +255,10 @@ export class PackageViewComponent implements OnInit {
 			NavUtils.updateSelectBoxText("packagesList",d.data.name);
 			d3.select(".svg-container-pv").attr("lastSelected",d.data.name)
         	}else if(d.data.type=="annotation"){
-        		
+        		d3.select(".svg-container-cv").selectAll("*").remove();
+        		 		this.classView = new ClassViewComponent(this.http);
+					this.classView.readPackageView(this.classViewData as any[],0,d.parent.data.name,this.schemasMap)
+					NavUtils.updateSelectBoxText("SelectViewBox","packageView");
         		d3.select(".svg-container-pv").attr("lastClicked",d.data.name);
         		d3.select(".svg-container-pv").attr("lastClass",d.parent.data.name);
         		//console.log(d3.select(".svg-container-pv").attr("lastClicked"))
@@ -233,7 +271,7 @@ export class PackageViewComponent implements OnInit {
                 	this.zoomProp.focus !== d && (ZoomUtils.zoom(event, d,this.zoomProp,this.svg,this.node), event.stopPropagation(),SVGUtils.setFocus(String(d.parent.data.name),".svg-container-pv"))
 			SVGUtils.hide(".svg-container-cv",d.parent.data.name);
 			SVGUtils.showView("package-view","class-view");
-			SVGUtils.viewTransition(String(d3.select(".svg-container-pv").attr("lastSelected")),".svg-container-cv");
+			//SVGUtils.viewTransition(String(d3.select(".svg-container-pv").attr("lastSelected")),".svg-container-cv");
 			NavUtils.refreshBox("fieldList","fields","Select Field","select field",d.parent.data.name,".svg-container-cv","field");
 			NavUtils.refreshBox("methodList","methods","Select Method","select method",d.parent.data.name,".svg-container-cv","method");
 			var split=d.parent.data.name.split(".");

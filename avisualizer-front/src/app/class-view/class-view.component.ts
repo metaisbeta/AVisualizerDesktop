@@ -7,6 +7,7 @@ import { SVGUtils } from '../utils/SVGUtils';
 import { ZoomUtils } from '../utils/ZoomUtils';
 import { NavUtils } from '../utils/NavUtils';
 import { HeaderUtils } from '../utils/HeaderUtils';
+import {GlobalConstants} from '../utils/constants/GlobalConstants'
 import {HttpClient} from '@angular/common/http';
 import * as loDash from 'lodash';
 import {contextMenu} from 'd3-context-menu';
@@ -33,35 +34,35 @@ export class ClassViewComponent implements OnInit {
   private path;
   private filepath;
   private toload;
-  private project_data;
+  private classViewData;
   readonly apiURL : string;
  constructor(private http : HttpClient) { 
- 		  	this.apiURL  = 'http://localhost:8000'; 
- 	try{	  	
-  	var file = d3.select("#projectSelectBox").select("select option:checked").attr("value");
-  	console.log(this.apiURL+'/projects/'+file+"/"+file+"-CV.json")
-		this.http.get(this.apiURL+'/'+file+"/"+file+"-CV.json")
-		.subscribe(resultado => {this.readPackageView(resultado as any[],0,""); this.project_data=resultado;});
-		
-  	}catch(e){
-  		
-  	}
- 		this.node = null;
- this.root = null;
- 	try{
- 		//this.toload = d3.select("#projectSelectBox option:checked").attr("value");
- 		//console.log("build",this.toload)
- 		var files = d3.select("#upload").property("value").split("\\");
-    		var filet = files[files.length-1];
-    		var dir = files[files.length-1].split("-");
-    		var folder = dir[0].toLowerCase();
- 		this.filepath = "./assets/"+folder+"/"+dir[0]+"-CV.json";
- 		this.ngOnInit();
- 	}catch (e) {
-   // declarações para manipular quaisquer exceções
-   	//this.toload=0; // passa o objeto de exceção para o manipulador de erro
-   	this.filepath = "./assets/spaceweathertsi/SpaceWeatherTSI-CV.json";
-}	
+// 		  	this.apiURL  = 'http://localhost:8000'; 
+// 	try{	  	
+//  	var file = d3.select("#projectSelectBox").select("select option:checked").attr("value");
+//  	console.log(this.apiURL+'/projects/'+file+"/"+file+"-CV.json")
+//		this.http.get(this.apiURL+'/'+file+"/"+file+"-CV.json")
+//		.subscribe(resultado => {this.readPackageView(resultado as any[],0,""); this.project_data=resultado;});
+//		
+//  	}catch(e){
+//  		
+//  	}
+// 		this.node = null;
+// this.root = null;
+// 	try{
+// 		//this.toload = d3.select("#projectSelectBox option:checked").attr("value");
+// 		//console.log("build",this.toload)
+// 		var files = d3.select("#upload").property("value").split("\\");
+//    		var filet = files[files.length-1];
+//    		var dir = files[files.length-1].split("-");
+//    		var folder = dir[0].toLowerCase();
+// 		this.filepath = "./assets/"+folder+"/"+dir[0]+"-CV.json";
+// 		this.ngOnInit();
+// 	}catch (e) {
+//   // declarações para manipular quaisquer exceções
+//   	//this.toload=0; // passa o objeto de exceção para o manipulador de erro
+//   	this.filepath = "./assets/spaceweathertsi/SpaceWeatherTSI-CV.json";
+//}	
  	
  }
 
@@ -87,11 +88,30 @@ export class ClassViewComponent implements OnInit {
      //  .catch(error => console.log(error));
   }
 
-public readPackageView(data: any[],metric:number,lastSelected:string): void{
-
-
+public readPackageView(data: any[],metric:number,lastSelected:string,map): void{
+	this.classViewData=data;
+	console.log(this.classViewData)
     // For class view use the AA metric
-    this.root = d3.hierarchy(data);
+       this.schemasMap=map;	
+  
+    	console.log(lastSelected)
+var findObjectByLabel = function(objs, label) {
+	
+  if(String(objs.name) === label) { 
+    return objs; 
+    }
+  else{
+    if(objs.children){
+      for(var i in objs.children){
+        let found = findObjectByLabel(objs.children[i],label)
+        if(found) return found
+      }
+    }
+  }
+};
+	
+   var obj = findObjectByLabel(data,lastSelected);
+   this.root = d3.hierarchy(obj);
     // this.root.descendants().forEach(d => {
     //
     //     d.data.value = d.data.value + 1; // adding 1 to each AA, to avoid 0
@@ -127,7 +147,7 @@ public readPackageView(data: any[],metric:number,lastSelected:string): void{
 
 
     // Fetch Annotations Schemas
-    const anot = new AnnotationSchemas(this.root, 'class');
+    const anot = new AnnotationSchemas(d3.hierarchy(data), 'class');
     this.schemasMap = anot.getSchemasColorMap();
     // Create the SVG
     this.svg = SVGUtils.createSvg('.svg-container-cv', this.width, this.height, 'classe');
@@ -138,7 +158,10 @@ public readPackageView(data: any[],metric:number,lastSelected:string): void{
     this.node = SVGUtils.createNode(this.svg, this.root);
     // Initial Zoom
     ZoomUtils.zoomTo([this.root.x, this.root.y, this.root.r * 2], this.svg, this.zoomProp, this.node);
-
+    d3.select(".svg-container-cv")
+    	.on("click",(event,d)=>{
+    		SVGUtils.showView("class-view","package-view");
+    	})
     // Color all circles
     d3.selectAll('circle').attr('stroke', d => CircleUtils.addCircleStroke(d))
                           .attr('stroke-dasharray', d => CircleUtils.addCircleDashArray(d))
@@ -151,7 +174,7 @@ public readPackageView(data: any[],metric:number,lastSelected:string): void{
 			if (d.data.type == 'class' || d.data.type == 'interface'){
 				this.zoomProp.focus !== d && (ZoomUtils.zoom(event, d, this.zoomProp, this.svg, this.node), event.stopPropagation(), SVGUtils.setFocus(String(d.data.name), '.svg-container-cv'));
 				CircleUtils.highlightNode('.svg-container-cv', d.data.name);
-				d3.select('.svg-container-pv').attr('lastSelected', d.parent.data.name);
+				//d3.select('.svg-container-pv').attr('lastSelected', d.parent.data.name);
 				// d3.select(".svg-container-sv").attr("lastSelected",d.parent.data.name);
 			}else if (d.data.type == 'method' || d.data.type == 'field'){
 				      CircleUtils.highlightNode('.svg-container-cv', d.data.name);
@@ -244,11 +267,17 @@ public readPackageView(data: any[],metric:number,lastSelected:string): void{
 
   }
   	public updateView(metric:number){
+  			
 		    d3.select(".svg-container-cv").selectAll("*").remove();
-		    var file = d3.select("#projectSelectBox").select("select option:checked").attr("value");
-  	console.log(this.apiURL+'/projects/'+file+"/"+file+"-CV.json")
-		this.http.get(this.apiURL+'/'+file+"/"+file+"-CV.json")
-		.subscribe(resultado => {this.readPackageView(resultado as any[],metric,d3.select(".svg-container-cv").attr("lastSelected"))});
+		   	var file = d3.select("#"+GlobalConstants.ProjectSelectBoxName).select("select option:checked").attr("value");
+	  		console.log(GlobalConstants.ServerURL+'/projects/'+file+"/"+file+"-CV.json")
+			this.http.get(GlobalConstants.ServerURL+'/'+file+"/"+file+"-CV.json")
+				.subscribe(data=>{
+        				this.readPackageView(data as any[],metric,d3.select(".svg-container-cv").attr("lastSelected"),this.schemasMap)
+        				//const anot = new AnnotationSchemas(d3.hierarchy(data), 'class');	
+        				//SchemaTableComponent.populateSchemasTable(anot);
+   });
+		    
 		    
 		    
                    if(metric==0){

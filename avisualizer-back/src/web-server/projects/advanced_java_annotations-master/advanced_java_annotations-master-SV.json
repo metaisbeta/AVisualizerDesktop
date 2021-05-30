@@ -6,20 +6,7 @@
       "type": "package",
       "properties": {},
       "children": [
-        {
-          "name": "java.lang",
-          "type": "schema",
-          "value": 6,
-          "properties": {},
-          "children": []
-        },
-        {
-          "name": "java.lang.annotation",
-          "type": "schema",
-          "value": 14,
-          "properties": {},
-          "children": []
-        },
+
         {
           "name": "ua.yet.adv.java.annotation.processor",
           "type": "package",
@@ -47,6 +34,20 @@
       "type": "package",
       "properties": {},
       "children": []
-    }
+    },
+            {
+          "name": "java.lang",
+          "type": "schema",
+          "value": 6,
+          "properties": {},
+          "children": []
+        },
+        {
+          "name": "java.lang.annotation",
+          "type": "schema",
+          "value": 14,
+          "properties": {},
+          "children": []
+        }
   ]
 }

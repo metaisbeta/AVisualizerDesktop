@@ -305,7 +305,7 @@ export class SVGUtils{
 
        }else if (d.data.type === 'annotation' && (d.parent.data.type === 'class' || d.parent.data.type === 'interface')){// type definition label (interface/class)
                 const classname = d.parent.data.name.split('.');
-                let label = 'Package Name: ' + d.parent.parent.parent.data.name + '<br/>' +
+                let label = 'Package Name: ' + d3.select(".svg-container-pv").attr("lastSelected") + '<br/>' +
                               'Class Name: ' + classname[classname.length - 1] + '<br/>'  +
                               'Annotation name: ' + d.data.name + '<br/>';
 
@@ -372,7 +372,8 @@ export class SVGUtils{
 		       	.style('left', (event.pageX + 10) + 'px')
         		.style('top', (event.pageY - 60) + 'px')
 			.style('background', '#BCC5F7')
-			.html('Package Name: ' + d.parent.parent.parent.data.name + '<br/>' + 'Class Name: ' + classname[classname.length - 1] + '<br/>' + d.parent.data.type + ' Name ' + componentname[componentname.length - 1] + '<br/>' + 'Annotation name: ' + d.data.name + '<br/>' + metric+": "+ data)
+			.html('Package Name: ' + d3.select(".svg-container-pv").attr("lastSelected") + '<br/>' + 'Class Name: ' + classname[classname.length - 1] + '<br/>' + d.parent.data.type + ' Name ' + componentname[componentname.length - 1] + '<br/>' + 'Annotation name: ' + d.data.name + '<br/>' + metric+": "+ data)
+			//.html('Class Name: ' + classname[classname.length - 1] + '<br/>' + d.parent.data.type + ' Name ' + componentname[componentname.length - 1] + '<br/>' + 'Annotation name: ' + d.data.name + '<br/>' + metric+": "+ data)
 		        .transition()
         		.duration(this.popUpTransition);
 

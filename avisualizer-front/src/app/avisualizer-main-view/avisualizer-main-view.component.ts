@@ -23,6 +23,9 @@ export class AvisualizerMainViewComponent implements OnInit {
   initialViewName = 'System View';
   readonly apiURL : string;
   uploadForm: FormGroup;
+  packageView: any;
+  systemView: any;
+  classView:any;
   constructor(private http : HttpClient) {
     this.isSVHidden = false;
     this.isPVHidden = true;
@@ -81,7 +84,10 @@ this.http.get(this.apiURL+'/projects',
             		            			    
         	} 
         	d3.select("#projectSelectBox")
-        		.on("change",(event,d)=>{this.getProject(d3.select("#projectSelectBox").select("select option:checked").attr("value"))});
+        		.on("change",(event,d)=>{
+        			this.getProject(d3.select("#projectSelectBox").select("select option:checked").attr("value"))
+        			
+        		});
                 });
 	}
 	getProject(file:string){
@@ -92,9 +98,9 @@ this.http.get(this.apiURL+'/projects',
 		d3.select("tbody").selectAll("*").remove();
 		d3.select(".svg-container-pv").selectAll("*").remove();
 		d3.select(".svg-container-cv").selectAll("*").remove();
-		new SystemViewComponent(this.http);
-		new ClassViewComponent(this.http);
-		new PackageViewComponent(this.http);
+		this.systemView = new SystemViewComponent(this.http);
+		//this.classView = new ClassViewComponent(this.http);
+		//this.packageView =new PackageViewComponent(this.http);
 	}
 
 
