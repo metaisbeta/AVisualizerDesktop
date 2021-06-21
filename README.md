@@ -5,7 +5,7 @@
 <h1 align = "center">Annotation Visualizer Desktop</h1>
 <h2 align = "center"> A Standalone Version of AVisualizer </h2>
 
-Introduction
+### Introduction
 
 
 This is the standalone desktop version of AVisualizer, built with [Electronjs](https://www.electronjs.org/)
