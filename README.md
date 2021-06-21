@@ -2,54 +2,33 @@
 [![AVisualizer-Actions-Build](https://github.com/phillima/avisualizer/workflows/AVisualizer/badge.svg)](https://github.com/phillima/AVisualizer/actions)
 [![Heroku](https://heroku-badge.herokuapp.com/?app=heroku-badge&style=flat)](https://avisualizer.herokuapp.com/)
 
-<h1 align = "center">Annotation Visualizer</h1>
-<h2 align = "center"> A Tool to Visualize Code Annotations Metrics Distribution </h2>
+<h1 align = "center">Annotation Visualizer Desktop</h1>
+<h2 align = "center"> A Standalone Version of AVisualizer </h2>
 
-Annotation Metrics
+Introduction
 ==================
 
-The Annotation Visualizer (AVisualizer) is a software visualization tool that aims to aid researches and developers in analyzing and comprehending code annotations distributions. The visualization is generated based on a suite software metrics dedicated to code annotations.
+This is the standalone desktop version of AVisualizer, built with [Electronjs](https://www.electronjs.org/)
+### Installing Dependencies
 
-The suite is composed of 9 metrics proposed and defined in the the paper [A Metrics Suite for Code Annoation Assessment](https://www.sciencedirect.com/science/article/pii/S016412121730273X)
+To build the project install
 
-### Code Annotation Metrics 
+`npm install -g --save-dev electron`
 
-* AC: Annotations in Class
-* UAC: Unique Annotations in Class
-* ASC: Annotation Schema in Class
-* AED: Annotation in Element Declaration
-* AA: Attributes in Annotation
-* ANL: Annotation Nesting Level
-* LOCAD: LOC in Annotation Declaration
-* NEC: Number of Elements in Class
-* NAEC: Number of Annotated Elements in Class
+To create a executable app install
 
-Collecting the Metrics
+`npm install -g electron-packager --save-dev`
+
+### Building app
 ==================
 
-The collection of the metrics values is performed by the [Annotation Sniffer (ASniffer)](https://github.com/phillima/asniffer). The generated JSON report is used as input for the AVisualizer.
+To build the app use 
+
+`electron-packager [Path] --platform=[Desired_OS]`
+
+Where
+
+* Path - is the path to avisualizer-frontend folder
+* Desired_OS - the ose desired to build the app (win32=windows, linux=linux distros and darwin=macOS)
 
 
-Annotations Visualization
-==================
-
-We are proposing three different polymetrics views for code annotations. They are all hierarchical view based on circle packs.
-
-* System View: In this view we are interested in observing how annotation schemas are distributed in the packages. This view has no information of classes.
-
-![System View Example](/images/sv-example.png)
-*Example of the System View for a Java Software*
-
-* Package View: In this view we are interested in observing how annotations are distributed inside a class, based on their schema. In this view we have no information of how the annotations are distributed between the code elements.
-
-![Package View Example](/images/pv-example.png)
-*Example of the Package View for a Java Software*
-
-* Class View: In this view we group the annotation inside a class based on their code elements.
-
-
-<h2> Status </h2>
- <p> 🚧 Work In Progress... 🚧</p>
- 
-<h2> License </h2>
-<img alt="GitHub" src="https://img.shields.io/github/license/phillima/avisualizer">
