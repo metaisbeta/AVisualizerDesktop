@@ -6,7 +6,7 @@
 <h2 align = "center"> A Standalone Version of AVisualizer </h2>
 
 Introduction
-==================
+
 
 This is the standalone desktop version of AVisualizer, built with [Electronjs](https://www.electronjs.org/)
 ### Installing Dependencies
@@ -20,7 +20,7 @@ To create a executable app install
 `npm install -g electron-packager --save-dev`
 
 ### Building app
-==================
+
 
 To build the app use 
 
