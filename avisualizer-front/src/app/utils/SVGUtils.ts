@@ -72,32 +72,7 @@ export class SVGUtils{
     	});
         return node;
     }
-    
-    public static hideAnnotations(container: string, id: String, show: boolean){
-    	if(container=="systemView")
-    		var view = ".svg-container-sv";
-    	else if (container=="packageView")
-    		var view = ".svg-container-pv";
-    	else
-    		var view = ".svg-container-cv";
-    			
-    	console.log(id,show,view)	
-    	d3.select(view).selectAll("circle").each(function(d, i){
 
-			if (String(d3.select(this).attr('name')) == id){ // schema se for package name se for system
-				
-				if (!show){
-		                        // console.log(d3.select(this).attr("name")+" "+id);
-					d3.select(this).style('visibility', 'hidden');
-				}else{
-					// console.log(d3.select(this).attr("name")+" "+id+" hide");
-					d3.select(this).style('visibility', 'visible');
-				}
-
-			}
-
-		  });		
-    }
     
     public static showView(origin: string, view: string){
     	d3.select(view).attr('hidden', null);
@@ -109,7 +84,7 @@ export class SVGUtils{
         d3.select(String(view)).selectAll('circle').each(function(d, i){
                 if (String(d3.select(this).attr('name')) == origin){
                 	//console.log(d3.select(this).attr('name'))
-                       d3.select(this).dispatch('click');
+                       //d3.select(this).dispatch('click');
 			                    SVGUtils.setFocus(origin, view);
 			                    return this;
 		}
@@ -122,173 +97,40 @@ export class SVGUtils{
         d3.select(String(view)).attr('lastSelected', String(toZoom));
 
     }
-    public static hide(container: string, name: string){
-
-    	d3.select(container).selectAll('circle').each(function(d, i){
-
-		       if (container == '.svg-container-pv'){
-		       	if ((d3.select(this).attr('class') == 'class' || d3.select(this).attr('class') == 'interface') && d3.select(this).attr('parent').includes(name)){
-		       		d3.select(this).style('visibility', 'visible');
-		       	}else if (d3.select(this).attr('name').includes(name)){
-		       		d3.select(this).style('visibility', 'visible');
-		       	}else if (d3.select(this).attr('class') == 'annotation' && d3.select(this).attr('grandfather').includes(name)) {
-		       		d3.select(this).style('visibility', 'visible');
- }
-		       	else if (d3.select(this).attr('name') == d3.select(container).attr('rootName')) {
-		       		d3.select(this).style('visibility', 'visible');
- }
-		       	else {
-		       		d3.select(this).style('visibility', 'hidden');
- }
-
-		       }else if (container == '.svg-container-cv'){
-		       	let split = name.split('.');
-		       	let pacote = '';
-		       	for (let i = 0; i < split.length - 1; i++){
-		       		if (i < split.length - 2) {
-		       			pacote = pacote + split[i] + '.';
-		       		}
-		       		else {
-		       			pacote = pacote + split[i];
-		       		}
-		       	}
-
-		       	if ((d3.select(this).attr('class') == 'class' || d3.select(this).attr('class') == 'interface') && String(d3.select(this).attr('name')) == name){
-		       		d3.select(this).style('visibility', 'visible');
-		       	}else if (String(d3.select(this).attr('parent')) == name){
-		       		d3.select(this).style('visibility', 'visible');
-		       	}else if (String(d3.select(this).attr('class')) == 'annotation' && String(d3.select(this).attr('grandfather')) == name){
-		       		d3.select(this).style('visibility', 'visible');
-		       	}else if (String(d3.select(this).attr('name')) == d3.select(container).attr('rootName')){
-		       		d3.select(this).style('visibility', 'visible');
-		       	}else if ((String(d3.select(this).attr('class')) == 'field' || String(d3.select(this).attr('class')) == 'method') && String(d3.select(this).attr('grandfather')) == name) {
-		       		d3.select(this).style('visibility', 'visible');
- }
-		       	else if (d3.select(this).attr('name') == pacote) {
-		       		d3.select(this).style('visibility', 'visible');
- }
-		       	else{
-		       		d3.select(this).style('visibility', 'hidden');
-		       	}
-		       }
-
-		  });
-
-    }
-    public static hideAllCircles(container: string){
-	  	  d3.select(container).selectAll('circle').each(function(d, i){
-			if(container==".svg-container-sv"){
-				if (String(d3.select(this).attr('class')) == "schema"){ // schema se for package name se for system
-					d3.select(this).style('visibility', 'hidden');
-				}
-			}else{
-				if (String(d3.select(this).attr('class')) == "annotation"){ // schema se for package name se for system
-					d3.select(this).style('visibility', 'hidden');
-				}
-			}
 
 
-		  });
-		 	
-    }
-    public static displayAllCircles(container: string){
-    		
-	  	  d3.select(container).selectAll('circle').each(function(d, i){
-			if(container==".svg-container-sv"){
-				if (String(d3.select(this).attr('class')) == "schema"){ // schema se for package name se for system
-					d3.select(this).style('visibility', 'visible');
-				}
-			}else{
-				if (String(d3.select(this).attr('class')) == "annotation" && (d3.select(this).attr('parent').includes(d3.select(".svg-container-sv").attr("lastSelected"))|| d3.select(this).attr('name')==d3.select(".svg-container-sv").attr("lastSelected"))){ // schema se for package name se for system
-					d3.select(this).style('visibility', 'visible');
-				}
-			}
 
-
-		  });
-    }
     public static hideCircles(container: string, id: String, show: boolean){
-          if (d3.selectAll('system-view').attr('hidden') !== ''){ // hide circles for system-view
-	  	  let view = d3.selectAll('.svg-container-sv').select('svg');
-		    view.selectAll('circle').each(function(d, i){
-
-			if (String(d3.select(this).attr('name')) == id){ // schema se for package name se for system
-				if (!show){
-		                        // console.log(d3.select(this).attr("name")+" "+id);
-					d3.select(this).style('visibility', 'hidden');
-				}else{
-					// console.log(d3.select(this).attr("name")+" "+id+" hide");
-					d3.select(this).style('visibility', 'visible');
-				}
-
+	if(container=="systemView"){
+		container = ".svg-container-sv"  		 	
+	}else if (container=="packageView"){
+		container=".svg-container-pv"
+	}else{
+		container = ".svg-container-cv"
+	}
+	console.log(container,id,show)
+	d3.select(container).selectAll('circle').each(function(d, i){
+	
+		if ((String(d3.select(this).attr('name')) == id || String(d3.select(this).attr('schema')) == id)){ 
+			if (!show){
+				d3.select(this).style('visibility', 'hidden');
+			}else{
+				d3.select(this).style('visibility', 'visible');
 			}
 
-		  });
-	  }else if (d3.selectAll('system-view').attr('hidden') == '' && d3.selectAll('class-view').attr('hidden') == ''){
-	  	  let view = d3.selectAll('.svg-container-pv').select('svg');
-		    view.selectAll('circle').each(function(d, i){
-
-			if (String(d3.select(this).attr('schema')) == id && d3.select(this).attr('grandfather').includes(d3.select('.svg-container-sv').attr('lastSelected'))){ // schema se for package name se for system
+		}else if(id=="UnselectAllRow" || id=="selectAllRow"){
+			if(String(d3.select(this).attr('class'))=="annotation" || String(d3.select(this).attr('class'))=="schema"){
 				if (!show){
-		                        // console.log(d3.select(this).attr("name")+" "+id);
 					d3.select(this).style('visibility', 'hidden');
 				}else{
-					// console.log(d3.select(this).attr("name")+" "+id+" hide");
 					d3.select(this).style('visibility', 'visible');
 				}
-
 			}
+		}
 
-		  });
-	  }else if (d3.selectAll('system-view').attr('hidden') == '' && d3.selectAll('package-view').attr('hidden') == ''){
-	  	  let view = d3.selectAll('.svg-container-cv').select('svg');
-		    view.selectAll('circle').each(function(d, i){
-			
-			//if (String(d3.select(this).attr('schema')) == id && ( d3.select(this).attr('grandfather') == d3.select('#classList').select('select option:checked').attr('value') || d3.select(this).attr('parent') == d3.select('#classList').select('select option:checked').attr('value'))){ // schema se for package name se for system
-			if (String(d3.select(this).attr('schema')) == id && (d3.select(this).attr("grandgrandfather")==d3.select(".svg-container-pv").attr("lastSelected") || d3.select(this).attr("grandfather")==d3.select(".svg-container-pv").attr("lastSelected"))){
-				if (!show){
-		                        // console.log(d3.select(this).attr("name")+" "+id);
-					d3.select(this).style('visibility', 'hidden');
-				}else{
-					// console.log(d3.select(this).attr("name")+" "+id+" hide");
-					d3.select(this).style('visibility', 'visible');
-				}
-
-			}
-
-		  });
-
-
-	  }
-
-
-
-
+	});	
 
     }
-
-
-    public static resetView(viewToUpdate){
-	let view = d3.selectAll(String(viewToUpdate)).select('svg');
- view.selectAll('circle').each(function(d, i){
-
-        	if (d3.select(this).attr('parent').includes(d3.select('.svg-container-sv').attr('lastSelected'))) {
-        			d3.select(this).style('visibility', 'visible');
-        	}
-        	else if (d3.select(this).attr('class') == 'schema'){
-        		d3.select(this).style('visibility', 'visible');
-        	}
-
-	});
-       d3.select("#schemas-table").selectAll("input").each(function(d,i){
-       		if(d3.select(this).attr("id")!="UnselectAllBox")
-       			d3.select(this).property("checked",true);
-       		else
-       			d3.select(this).property("checked",false);		
-       });
-   }
-
-
 
     // popUp methods
     public static createPopUp(d: any, svg: any, event: any){
@@ -373,7 +215,6 @@ export class SVGUtils{
         		.style('top', (event.pageY - 60) + 'px')
 			.style('background', '#BCC5F7')
 			.html('Package Name: ' + d3.select(".svg-container-pv").attr("lastSelected") + '<br/>' + 'Class Name: ' + classname[classname.length - 1] + '<br/>' + d.parent.data.type + ' Name ' + componentname[componentname.length - 1] + '<br/>' + 'Annotation name: ' + d.data.name + '<br/>' + metric+": "+ data)
-			//.html('Class Name: ' + classname[classname.length - 1] + '<br/>' + d.parent.data.type + ' Name ' + componentname[componentname.length - 1] + '<br/>' + 'Annotation name: ' + d.data.name + '<br/>' + metric+": "+ data)
 		        .transition()
         		.duration(this.popUpTransition);
 

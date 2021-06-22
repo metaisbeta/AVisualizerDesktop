@@ -7,7 +7,6 @@ import { SVGUtils } from '../utils/SVGUtils';
 import { ZoomUtils } from '../utils/ZoomUtils';
 import { NavUtils } from '../utils/NavUtils';
 import { HeaderUtils } from '../utils/HeaderUtils';
-import {GlobalConstants} from '../utils/constants/GlobalConstants'
 import {HttpClient} from '@angular/common/http';
 import * as loDash from 'lodash';
 import {contextMenu} from 'd3-context-menu';
@@ -34,36 +33,11 @@ export class ClassViewComponent implements OnInit {
   private path;
   private filepath;
   private toload;
-  private classViewData;
+  private project_data;
   readonly apiURL : string;
  constructor(private http : HttpClient) { 
-// 		  	this.apiURL  = 'http://localhost:8000'; 
-// 	try{	  	
-//  	var file = d3.select("#projectSelectBox").select("select option:checked").attr("value");
-//  	console.log(this.apiURL+'/projects/'+file+"/"+file+"-CV.json")
-//		this.http.get(this.apiURL+'/'+file+"/"+file+"-CV.json")
-//		.subscribe(resultado => {this.readPackageView(resultado as any[],0,""); this.project_data=resultado;});
-//		
-//  	}catch(e){
-//  		
-//  	}
-// 		this.node = null;
-// this.root = null;
-// 	try{
-// 		//this.toload = d3.select("#projectSelectBox option:checked").attr("value");
-// 		//console.log("build",this.toload)
-// 		var files = d3.select("#upload").property("value").split("\\");
-//    		var filet = files[files.length-1];
-//    		var dir = files[files.length-1].split("-");
-//    		var folder = dir[0].toLowerCase();
-// 		this.filepath = "./assets/"+folder+"/"+dir[0]+"-CV.json";
-// 		this.ngOnInit();
-// 	}catch (e) {
-//   // declarações para manipular quaisquer exceções
-//   	//this.toload=0; // passa o objeto de exceção para o manipulador de erro
-//   	this.filepath = "./assets/spaceweathertsi/SpaceWeatherTSI-CV.json";
-//}	
- 	
+	
+ 	this.apiURL  = 'http://localhost:8000'; 
  }
 
   ngOnInit(): void {
@@ -88,16 +62,12 @@ export class ClassViewComponent implements OnInit {
      //  .catch(error => console.log(error));
   }
 
-public readPackageView(data: any[],metric:number,lastSelected:string,map): void{
-	this.classViewData=data;
-	console.log(this.classViewData)
+public readPackageView(data: any[],name,metric:number,lastSelected:string): void{
+
+console.log(data)
     // For class view use the AA metric
-       this.schemasMap=map;	
-  
-    	console.log(lastSelected)
-var findObjectByLabel = function(objs, label) {
-	
-  if(String(objs.name) === label) { 
+      var findObjectByLabel = function(objs, label) {
+  if(objs.name === label) { 
     return objs; 
     }
   else{
@@ -109,9 +79,9 @@ var findObjectByLabel = function(objs, label) {
     }
   }
 };
+	var obj = findObjectByLabel(data, name);
 	
-   var obj = findObjectByLabel(data,lastSelected);
-   this.root = d3.hierarchy(obj);
+	this.root = d3.hierarchy(obj);
     // this.root.descendants().forEach(d => {
     //
     //     d.data.value = d.data.value + 1; // adding 1 to each AA, to avoid 0
@@ -153,15 +123,17 @@ var findObjectByLabel = function(objs, label) {
     this.svg = SVGUtils.createSvg('.svg-container-cv', this.width, this.height, 'classe');
     d3.select('.svg-container-cv').attr('lastSelected', lastSelected);
     d3.select('.svg-container-cv').attr('rootName', this.root.data.name);
-	
+	d3.select(".svg-container-cv")
+		.on("click",(event,d)=>{
+			SVGUtils.showView('class-view', 'package-view');
+    			HeaderUtils.headerUpdate('Package View', 'Package: ' + d3.select(".svg-container-pv").attr("lastSelected"));
+    			NavUtils.updateSelectBoxText("SelectViewBox","packageView");
+		})
     // Create the nodes
     this.node = SVGUtils.createNode(this.svg, this.root);
     // Initial Zoom
     ZoomUtils.zoomTo([this.root.x, this.root.y, this.root.r * 2], this.svg, this.zoomProp, this.node);
-    d3.select(".svg-container-cv")
-    	.on("click",(event,d)=>{
-    		SVGUtils.showView("class-view","package-view");
-    	})
+
     // Color all circles
     d3.selectAll('circle').attr('stroke', d => CircleUtils.addCircleStroke(d))
                           .attr('stroke-dasharray', d => CircleUtils.addCircleDashArray(d))
@@ -169,46 +141,7 @@ var findObjectByLabel = function(objs, label) {
                             .attr('fill', d => CircleUtils.colorCircles(d, this.schemasMap));
     // Apply zoom to all circles in this specific view
     this.svg.selectAll('circle')
-        .on('click', (event, d) => {
-			//console.log("aa?")
-			if (d.data.type == 'class' || d.data.type == 'interface'){
-				this.zoomProp.focus !== d && (ZoomUtils.zoom(event, d, this.zoomProp, this.svg, this.node), event.stopPropagation(), SVGUtils.setFocus(String(d.data.name), '.svg-container-cv'));
-				CircleUtils.highlightNode('.svg-container-cv', d.data.name);
-				//d3.select('.svg-container-pv').attr('lastSelected', d.parent.data.name);
-				// d3.select(".svg-container-sv").attr("lastSelected",d.parent.data.name);
-			}else if (d.data.type == 'method' || d.data.type == 'field'){
-				      CircleUtils.highlightNode('.svg-container-cv', d.data.name);
-				      if (d.data.type == 'method') {
-				      	NavUtils.updateSelectBoxText('methodList', d.data.name);
-				      }
-				      else {
-				      	NavUtils.updateSelectBoxText('fieldList', d.data.name);
-				      }
-			}else if (d.data.type == 'package'){
-				NavUtils.updateSelectBoxText("SelectViewBox","packageView");
-				SVGUtils.showView('class-view', 'package-view');
-				NavUtils.resetBox('methodList', 'methods', 'Select Method', 'select method');
-				NavUtils.resetBox('fieldList', 'fields', 'Select Field', 'select field');
-				NavUtils.refreshBox('classList', 'classes', 'Select Class', 'select class', d.data.name, '.svg-container-pv', '');
-				NavUtils.refreshBox('interfaceList', 'interfaces', 'Select Interface', 'select interface', d.data.name, '.svg-container-pv', 'interface');
-				// HeaderUtils.setPackageViewHeader("Package",d.data.name,this.root.data.name);
-    HeaderUtils.headerUpdate('Packge View', d.data.name);
-				SVGUtils.resetView('.svg-container-cv');
-				d3.select('.svg-container-pv').attr('lastSelected', d.data.name);
-				d3.select('.svg-container-pv').selectAll('circle').each(function(d, i){
-					if (d3.select(this).attr('name') == d3.select('.svg-container-pv').attr('lastSelected')){
 
-						d3.select(this).dispatch('click');
-
-
-					}
-
-	    			});
-			}
-
-
-
-        })
 	.on('mouseover', (event, d) => {
 		SVGUtils.createPopUp(d, this.svg, event)		
 		var name = d.data.properties.schema;		
@@ -261,23 +194,18 @@ var findObjectByLabel = function(objs, label) {
 			}
 
 		});			
-		SVGUtils.hide(".svg-container-cv",lastSelected);
+		
 		                                             	
 		
 
   }
   	public updateView(metric:number){
-  			
+  			console.log(d3.select(".svg-container-pv").attr("lastSelected"))
 		    d3.select(".svg-container-cv").selectAll("*").remove();
-		   	var file = d3.select("#"+GlobalConstants.ProjectSelectBoxName).select("select option:checked").attr("value");
-	  		console.log(GlobalConstants.ServerURL+'/projects/'+file+"/"+file+"-CV.json")
-			this.http.get(GlobalConstants.ServerURL+'/'+file+"/"+file+"-CV.json")
-				.subscribe(data=>{
-        				this.readPackageView(data as any[],metric,d3.select(".svg-container-cv").attr("lastSelected"),this.schemasMap)
-        				//const anot = new AnnotationSchemas(d3.hierarchy(data), 'class');	
-        				//SchemaTableComponent.populateSchemasTable(anot);
-   });
-		    
+		    var file = d3.select("#projectSelectBox").select("select option:checked").attr("value");
+  	console.log(this.apiURL+'/projects/'+file+"/"+file+"-CV.json")
+		this.http.get(this.apiURL+'/'+file+"/"+file+"-CV.json")
+		.subscribe(resultado => {this.readPackageView(resultado as any[],d3.select(".svg-container-pv").attr("lastSelected"),metric,d3.select(".svg-container-pv").attr("lastSelected"))});
 		    
 		    
                    if(metric==0){

@@ -103,7 +103,7 @@ export class SchemaTableComponent implements OnInit {
        	 				        				});
        	 				        			}
        	 				        		});
-        								SVGUtils.hideAnnotations(container,this.id.replace(" ",""),this.checked);
+        								SVGUtils.hideCircles(container,this.id.replace(" ",""),this.checked);
 									        d3.select("tbody").selectAll("input").each(function(d,i){
 											if(d3.select(this).attr("class")=="parent" && d3.select(this).attr("id")==boxSchema)
 												d3.select(this).property("checked",checked)
@@ -144,17 +144,9 @@ d3.select("#schemas-table").select("tbody").append("tr").attr("id","selectAllRow
       d3.select("#selectAllRow").append("input").property('checked',true)
        .attr('type','checkbox')
        .attr("id","selectAllBox")
-       .on("click",(event, d) =>{
+       .on("click",function(d){
    		var container = String(d3.select("#SelectViewBox").select("select option:checked").attr("value"));
-       	if(container=="systemView"){
-       		
-       		SVGUtils.displayAllCircles(".svg-container-sv");
-       	}else if (container=="packageView"){
-       		
-       		SVGUtils.displayAllCircles(".svg-container-pv");
-       	}else{
-       		SVGUtils.displayAllCircles(".svg-container-cv");
-       	}
+       	SVGUtils.hideCircles(container,d3.select("#selectAllRow").attr("id"),this.checked);
        	d3.select("#schemas-table").selectAll("input").each(function(d,i){
        		if(d3.select(this).attr("id")!="UnselectAllBox")
        			d3.select(this).property("checked",true);
@@ -168,17 +160,13 @@ d3.select("#schemas-table").select("tbody").append("tr").attr("id","selectAllRow
       d3.select("#UnselectAllRow").append("input").property('checked',false)
        .attr('type','checkbox')
        .attr("id","UnselectAllBox")
-       .on("click",(event, d) =>{
+       .on("click",function(d){
        	
 		var container = String(d3.select("#SelectViewBox").select("select option:checked").attr("value"));
-       	if(container=="systemView"){
+       	
        		
-       		SVGUtils.hideAllCircles(".svg-container-sv");
-       	}else if (container=="packageView"){
-       		SVGUtils.hideAllCircles(".svg-container-pv");
-       	}else{
-       		SVGUtils.hideAllCircles(".svg-container-cv");
-       	}
+       		SVGUtils.hideCircles(container,d3.select("#UnselectAllRow").attr("id"),false);
+
        	d3.select("#schemas-table").selectAll("input").each(function(d,i){
        		if(d3.select(this).attr("id")!="UnselectAllBox")
        			d3.select(this).property("checked",false);

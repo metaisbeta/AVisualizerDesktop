@@ -23,9 +23,6 @@ export class AvisualizerMainViewComponent implements OnInit {
   initialViewName = 'System View';
   readonly apiURL : string;
   uploadForm: FormGroup;
-  packageView: any;
-  systemView: any;
-  classView:any;
   constructor(private http : HttpClient) {
     this.isSVHidden = false;
     this.isPVHidden = true;
@@ -84,10 +81,7 @@ this.http.get(this.apiURL+'/projects',
             		            			    
         	} 
         	d3.select("#projectSelectBox")
-        		.on("change",(event,d)=>{
-        			this.getProject(d3.select("#projectSelectBox").select("select option:checked").attr("value"))
-        			
-        		});
+        		.on("change",(event,d)=>{this.getProject(d3.select("#projectSelectBox").select("select option:checked").attr("value"))});
                 });
 	}
 	getProject(file:string){
@@ -98,9 +92,9 @@ this.http.get(this.apiURL+'/projects',
 		d3.select("tbody").selectAll("*").remove();
 		d3.select(".svg-container-pv").selectAll("*").remove();
 		d3.select(".svg-container-cv").selectAll("*").remove();
-		this.systemView = new SystemViewComponent(this.http);
-		//this.classView = new ClassViewComponent(this.http);
-		//this.packageView =new PackageViewComponent(this.http);
+		new SystemViewComponent(this.http);
+		//new ClassViewComponent(this.http);
+		//new PackageViewComponent(this.http);
 	}
 
 
@@ -109,8 +103,7 @@ this.http.get(this.apiURL+'/projects',
     this.isPVHidden = true;
     this.isCVHidden = true;
 
-    //reset workspace on change. SHOULD NOT BE IT!!!!!
-    SVGUtils.resetView(".svg-container-sv");
+
     //transition between zoomed views
 
     if(!(this.selectedView=="System")){
@@ -130,7 +123,7 @@ this.http.get(this.apiURL+'/projects',
     this.isCVHidden = true;
 
     //reset workspace on change. SHOULD NOT BE IT!!!!!
-    SVGUtils.resetView(".svg-container-pv");
+    
     //transition between zoomed views
     console.log(this.isSVHidden,this.isPVHidden);
     if(!(this.selectedView=="Package")){
@@ -146,7 +139,7 @@ this.http.get(this.apiURL+'/projects',
     this.isSVHidden = true;
     this.isPVHidden = true;
     this.isCVHidden = false;
-    SVGUtils.resetView(".svg-container-cv");
+    
     if(!(this.selectedView=="Class")){
     	if(this.selectedView=="System")
     		SVGUtils.viewTransition(String(d3.select(".svg-container-sv").attr("lastSelected")),".svg-container-cv");
