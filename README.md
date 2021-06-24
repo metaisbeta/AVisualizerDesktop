@@ -18,6 +18,13 @@ To create a executable app install
 
 ### Building app
 
+To ensure all packages are met, run
+
+`npm install`
+
+Build the angular project
+
+`ng build`
 
 To build the app use 
 
