@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
 import { PackageViewComponent } from './package-view/package-view.component';
@@ -9,6 +9,7 @@ import { ClassViewComponent } from './class-view/class-view.component';
 import {HttpClientModule} from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { NgxSpinnerModule } from "ngx-spinner";
 @NgModule({
   declarations: [
     AppComponent,
@@ -23,8 +24,9 @@ import { FormBuilder, FormGroup } from '@angular/forms';
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-   
+   NgxSpinnerModule,
   ],
+     schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [],
   bootstrap: [AppComponent]
 })

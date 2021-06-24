@@ -8,6 +8,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { SystemViewComponent } from '../system-view/system-view.component';
 import { ClassViewComponent } from '../class-view/class-view.component';
 import { PackageViewComponent } from '../package-view/package-view.component';
+import { NgxSpinnerService } from "ngx-spinner";
 @Component({
   selector: 'avisualizer-main-view',
   templateUrl: './avisualizer-main-view.component.html',
@@ -23,7 +24,7 @@ export class AvisualizerMainViewComponent implements OnInit {
   initialViewName = 'System View';
   readonly apiURL : string;
   uploadForm: FormGroup;
-  constructor(private http : HttpClient) {
+  constructor(private http : HttpClient, private spinner: NgxSpinnerService) {
     this.isSVHidden = false;
     this.isPVHidden = true;
     this.isCVHidden = true;
@@ -48,14 +49,19 @@ export class AvisualizerMainViewComponent implements OnInit {
       this.uploadForm.get('profile').setValue(file);
     }
   }
-   onSubmit() {
+  async onSubmit() {
+  
+   this.spinner.show();
+   d3.select("ngx-spinner").style('visibility', 'visible')
     const formData = new FormData();
     formData.append('file', this.uploadForm.get('profile').value);
 
-    this.http.post<any>(this.apiURL+'/asniffer', formData).subscribe(
-      (res) => console.log(res),
-      (err) => console.log(err)
+    await this.http.post(this.apiURL+'/asniffer', formData,{responseType: 'text'}).subscribe(
+      (res) => d3.select("ngx-spinner").style('visibility', 'hidden'),
+      (err) => console.log(err),
+      
     );
+ 
   }
 
 

@@ -2,7 +2,7 @@ const http = require('http');
 const directory = './projects/';
 const path = require('path')
 var url = require('url')
-const { exec } = require("child_process");
+var { execSync } = require("child_process").execSync;
 const platform = process.platform;
 fs = require('fs')
 var IncomingForm = require('formidable').IncomingForm
@@ -51,16 +51,25 @@ const requestListener = function (req, res) {
 			
 			console.log("eeee ",path.resolve(__dirname))
 			console.log("./"+path.resolve(__dirname)+"/asniffer.sh "+filePath+" "+fileName+" "+originalName)
-			if(platform=="linux" || platform=="darwin"){
-		  		exec(path.resolve(__dirname)+"/asniffer.sh "+filePath+" "+fileName+" "+originalName+" "+path.resolve(__dirname), (error, stdout, stderr) => {
+			if(platform=="linux" || platform=="darwin"){						
+		  		execSync = require("child_process").execSync(path.resolve(__dirname)+"/asniffer.sh "+filePath+" "+fileName+" "+originalName+" "+path.resolve(__dirname),{maxBuffer: 1024 * 500000}, function(error, stdout, stderr,stdio){
 				    	console.log(`stdout: ${stdout}`);
 				    	
-				});			
+				});
+				console.log("done")
+				res.setHeader('Access-Control-Allow-Origin', 'http://localhost:4200');			
+	    			res.setHeader('Content-Type', 'text');
+				res.writeHead(200);		
+	  			res.end("finished");			
 			}else{
-				exec(path.resolve(__dirname)+"/asniffer.bat "+filePath+" "+fileName+" "+originalName+" "+path.resolve(__dirname), (error, stdout, stderr) => {
+				execSync = require("child_process").execSync(path.resolve(__dirname)+"/asniffer.bat "+filePath+" "+fileName+" "+originalName+" "+path.resolve(__dirname),{maxBuffer: 1024 * 500000},(error, stdout, stderr,stdio) => {
 				    	console.log(`stdout: ${stdout}`);
 				    	
-				});	
+				});
+				res.setHeader('Access-Control-Allow-Origin', 'http://localhost:4200');			
+	    			res.setHeader('Content-Type', 'text');
+				res.writeHead(200);		
+	  			res.end("finished");	
 			}
 
 		})
